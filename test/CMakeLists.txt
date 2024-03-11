@@ -4,6 +4,7 @@ add_executable(
     ed-test
     test-state.cpp
     test-combinations.cpp
+    test-binomial.cpp
 )
 
 target_include_directories(ed-test PRIVATE .)
