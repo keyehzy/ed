@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.23)
 add_executable(
     ed-test
     test-state.cpp
+    test-combinations.cpp
 )
 
 target_include_directories(ed-test PRIVATE .)
