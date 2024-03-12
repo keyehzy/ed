@@ -36,11 +36,11 @@ class Hamiltonian {
         State<S> s(up_nibble, down_nibble);
         size_t i = combinations().b_to_i(up_nibble) * size() +
                    combinations().b_to_i(down_nibble);
-        hmat(i, i) = u * s.double_occ() - mu * s.size();
+        hmat(i, i) = m_u * s.double_occ() - m_mu * s.size();
         for (const State<S>& state : s.hopping()) {
           size_t j = combinations().b_to_i(state.up_nibble()) * size() +
                      combinations().b_to_i(state.down_nibble());
-          hmat(i, j) = -t;
+          hmat(i, j) = -m_t;
         }
       }
     }
