@@ -12,5 +12,11 @@ add_library(
     ed-lib
     foo.cpp
 )
-target_include_directories(ed-lib PUBLIC .)
+
+target_include_directories(
+  ed-lib
+  PUBLIC
+  ${Eigen_INCLUDE_DIRS}
+  .
+)
 

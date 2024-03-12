@@ -5,9 +5,15 @@ add_executable(
     test-state.cpp
     test-combinations.cpp
     test-binomial.cpp
+    test-hamiltonian.cpp
 )
 
-target_include_directories(ed-test PRIVATE .)
+target_include_directories(
+  ed-test
+  PRIVATE
+  ${Eigen_INCLUDE_DIRS}
+  .
+)
 
 target_link_libraries(
     ed-test

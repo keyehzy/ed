@@ -10,6 +10,9 @@ add_subdirectory(src)
 add_subdirectory(third-party)
 
 if (BUILD_TESTING)
-   include(CTest)
-   add_subdirectory(test)
+  include(CTest)
+  add_subdirectory(test)
 endif()
+
+find_package (Eigen3 REQUIRED)
+
