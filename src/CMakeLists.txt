@@ -17,6 +17,27 @@ target_include_directories(
   ed-lib
   PUBLIC
   ${Eigen_INCLUDE_DIRS}
+  ${OpenBLAS_INCLUDE_DIR}
   .
+)
+
+target_compile_options(
+  ed-lib
+  PRIVATE
+  -pthread
+  -fopenmp
+  -O2
+  -march=native
+)
+
+target_link_libraries(
+    ed-lib
+    PRIVATE
+    ${OpenBLAS_LIB}
+    omp
+    pthread
+    m
+    dl
+    gfortran
 )
 
