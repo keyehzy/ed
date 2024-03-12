@@ -28,9 +28,9 @@ class Hamiltonian {
 
   double mu() const { return m_mu; }
 
-  Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> matrix() const {
+  Eigen::MatrixXd matrix() const {
     size_t dim = size() * size();
-    Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> hmat(dim, dim);
+    Eigen::MatrixXd hmat = Eigen::MatrixXd::Zero(dim, dim);
     for (const Nibble<S>& up_nibble : combinations().states()) {
       for (const Nibble<S>& down_nibble : combinations().states()) {
         State<S> s(up_nibble, down_nibble);
