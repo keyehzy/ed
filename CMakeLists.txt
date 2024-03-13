@@ -15,7 +15,5 @@ if (BUILD_TESTING)
   add_subdirectory(test)
 endif()
 
-list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/Modules")
 
-find_package(Eigen3 REQUIRED)
-find_package(OpenBLAS REQUIRED)
+

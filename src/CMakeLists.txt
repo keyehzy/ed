@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.23)
 
+find_package(OpenMP REQUIRED)
+find_package(Eigen3 REQUIRED)
+find_package(Spectra REQUIRED)
+
 add_executable(
     ed
     main.cpp
@@ -16,28 +20,21 @@ add_library(
 target_include_directories(
   ed-lib
   PUBLIC
-  ${Eigen_INCLUDE_DIRS}
-  ${OpenBLAS_INCLUDE_DIR}
+  /usr/include/eigen3
+  /usr/include/Spectra
   .
 )
 
 target_compile_options(
   ed-lib
-  PRIVATE
-  -pthread
-  -fopenmp
+  PUBLIC
   -O2
   -march=native
 )
 
 target_link_libraries(
     ed-lib
-    PRIVATE
-    ${OpenBLAS_LIB}
-    omp
-    pthread
-    m
-    dl
-    gfortran
+    PUBLIC
+    OpenMP::OpenMP_CXX
 )
 
