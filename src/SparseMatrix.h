@@ -13,10 +13,11 @@ class SparseMatrix {
   };
 
   struct IndexHasher {
+    static constexpr size_t p = 2654435761;
     size_t operator()(const Index& index) const {
-      size_t prime = 2654435761;
-      return (prime + std::hash<size_t>{}(index.i)) * prime +
-             std::hash<size_t>{}(index.j);
+      size_t ih = std::hash<size_t>{}(index.i);
+      size_t jh = std::hash<size_t>{}(index.j);
+      return (p + ih) * p + jh;
     }
   };
 
@@ -33,4 +34,3 @@ class SparseMatrix {
  private:
   std::unordered_map<Index, T, IndexHasher> m_lut{};
 };
-
