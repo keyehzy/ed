@@ -5,9 +5,31 @@
 
 using testing::DoubleNear;
 using testing::Pointwise;
+using testing::UnorderedElementsAre;
+
+TEST(test_hamiltonian, hubbard1d_groundstate) {
+  {
+    Hubbard1D<2, 1> system(/*t=*/1, /*u=*/0, /*mu=*/0);
+    auto matrix = system.dense();
+    Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> es;
+    es.compute(matrix);
+    auto gs = es.eigenvectors().col(0).cwiseAbs().transpose();
+    EXPECT_THAT(gs, Pointwise(DoubleNear(1e-9), {0.5, 0.5, 0.5, 0.5}));
+  }
+
+  {
+    Hubbard1D<2, 1> system(/*t=*/1, /*u=*/1e12, /*mu=*/0);
+    auto matrix = system.dense();
+    Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> es;
+    es.compute(matrix);
+    auto gs = es.eigenvectors().col(0).cwiseAbs().transpose();
+    EXPECT_THAT(gs, Pointwise(DoubleNear(1e-9),
+                              {0.0, 0.70710678118654, 0.70710678118654, 0.0}));
+  }
+}
 
 TEST(test_hamiltonian, dense_vs_sparse) {
-  Hamiltonian<2, 1> system(/*t=*/1, /*u=*/1, /*mu=*/0);
+  Hubbard1D<2, 1> system(/*t=*/1, /*u=*/1, /*mu=*/0);
 
   // Dense
   auto dense = system.dense();
