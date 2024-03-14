@@ -39,8 +39,6 @@ class SparseMatrix {
 
   SparseMatrix() {}
 
-  void insert(size_t i, size_t j, T val) { m_lut.emplace(i, j); }
-
   const T& operator()(size_t i, size_t j) const { return m_lut[Index{i, j}]; }
 
   T& operator()(size_t i, size_t j) { return m_lut[Index{i, j}]; }

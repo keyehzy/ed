@@ -13,7 +13,7 @@ add_executable(
 )
 
 set_target_properties(ed PROPERTIES RUNTIME_OUTPUT_DIRECTORY ..)
-target_link_libraries(ed PRIVATE ed-lib)
+target_link_libraries(ed PUBLIC ed-lib)
 
 add_library(
     ed-lib
