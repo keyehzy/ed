@@ -17,13 +17,11 @@ class Combinations {
   size_t size() const { return m_states.size(); }
 
   std::array<uint8_t, S> i_to_b(size_t i) const {
-    ED_ASSERT(!m_states.empty());
     ED_ASSERT(i < m_states.size());
     return m_states[i];
   }
 
   int b_to_i(const std::array<uint8_t, S>& b) const {
-    ED_ASSERT(!m_states.empty());
     auto it = std::find(m_states.begin(), m_states.end(), b);
     ED_ASSERT(it != m_states.end());
     return std::distance(m_states.begin(), it);
@@ -31,13 +29,10 @@ class Combinations {
 
  private:
   void generate_combinations() {
-    if (!m_states.empty()) {
-      return;
-    }
     std::array<uint8_t, S> v{};
     std::fill(v.begin() + S - N, v.end(), 1);
     do {
-      m_states.emplace_back(v);
+      m_states.push_back(v);
     } while (std::next_permutation(v.begin(), v.end()));
   }
 
