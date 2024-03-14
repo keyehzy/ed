@@ -13,6 +13,8 @@
 #include "Combinations.h"
 #include "State.h"
 
+#define EIGEN_USE_BLAS
+#define EIGEN_USE_LAPACKE
 template <size_t S, size_t F>
 class Hamiltonian {
   static_assert(S >= F);
