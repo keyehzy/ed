@@ -17,7 +17,7 @@ target_link_libraries(ed PRIVATE ed-lib)
 
 add_library(
     ed-lib
-    foo.cpp
+    Timing.cpp
 )
 
 target_include_directories(
