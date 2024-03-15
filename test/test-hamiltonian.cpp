@@ -1,7 +1,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "Hamiltonian.h"
+#include "RealSpace.h"
 
 using testing::DoubleNear;
 using testing::IsEmpty;
@@ -13,7 +13,7 @@ TEST(test_state, nibble_transitions) {
     Nibble<4> upnibble{0, 0, 0, 0};
     Nibble<4> downnibble{0, 0, 0, 0};
     State s(upnibble, downnibble);
-    Hubbard1DHoppingGenerator<4> g;
+    RealSpaceHoppingGenerator<4> g;
     EXPECT_THAT(g.nearest_neighbors_hoppings(s), IsEmpty());
   }
 
@@ -21,7 +21,7 @@ TEST(test_state, nibble_transitions) {
     Nibble<4> upnibble{1, 1, 1, 1};
     Nibble<4> downnibble{1, 1, 1, 1};
     State s(upnibble, downnibble);
-    Hubbard1DHoppingGenerator<4> g;
+    RealSpaceHoppingGenerator<4> g;
     EXPECT_THAT(g.nearest_neighbors_hoppings(s), IsEmpty());
   }
 
@@ -29,7 +29,7 @@ TEST(test_state, nibble_transitions) {
     Nibble<4> up_nibble{1, 1, 0, 0};
     Nibble<4> down_nibble{1, 0, 1, 0};
     State s(up_nibble, down_nibble);
-    Hubbard1DHoppingGenerator<4> g;
+    RealSpaceHoppingGenerator<4> g;
     EXPECT_THAT(
         g.nearest_neighbors_hoppings(s),
         UnorderedElementsAre(State(up_nibble, Nibble<4>{0, 0, 1, 1}),
@@ -43,7 +43,7 @@ TEST(test_state, nibble_transitions) {
 
 TEST(test_hamiltonian, hubbard1d_groundstate) {
   {
-    Hubbard1D<2, 1> system(/*t=*/1, /*u=*/0, /*mu=*/0);
+    RealSpace<2, 1> system(/*t=*/1, /*u=*/0, /*mu=*/0);
     auto matrix = system.dense();
     Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> es;
     es.compute(matrix);
@@ -52,7 +52,7 @@ TEST(test_hamiltonian, hubbard1d_groundstate) {
   }
 
   {
-    Hubbard1D<2, 1> system(/*t=*/1, /*u=*/1e12, /*mu=*/0);
+    RealSpace<2, 1> system(/*t=*/1, /*u=*/1e12, /*mu=*/0);
     auto matrix = system.dense();
     Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> es;
     es.compute(matrix);
@@ -63,7 +63,7 @@ TEST(test_hamiltonian, hubbard1d_groundstate) {
 }
 
 TEST(test_hamiltonian, dense_vs_sparse) {
-  Hubbard1D<2, 1> system(/*t=*/1, /*u=*/1, /*mu=*/0);
+  RealSpace<2, 1> system(/*t=*/1, /*u=*/1, /*mu=*/0);
 
   // Dense
   auto dense = system.dense();

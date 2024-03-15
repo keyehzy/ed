@@ -19,7 +19,7 @@
 #define EIGEN_USE_LAPACKE
 
 template <size_t S>
-struct Hubbard1DHoppingGenerator {
+struct RealSpaceHoppingGenerator {
   constexpr std::vector<Nibble<S>> generate_nibble_transitions(
       const Nibble<S>& nibble) {
     std::vector<Nibble<S>> result;
@@ -62,11 +62,11 @@ struct Hubbard1DHoppingGenerator {
 // t is nearest-neighbors hopping, u is local interaction and mu is chemical
 // potential.
 template <size_t S, size_t F>
-class Hubbard1D {
+class RealSpace {
   static_assert(S >= F);
 
  public:
-  Hubbard1D(double t, double u, double mu);
+  RealSpace(double t, double u, double mu);
 
   size_t size() const;
 
@@ -94,53 +94,53 @@ class Hubbard1D {
   double m_mu;
   Combinations<S, F> m_combs{};
   SparseMatrix<double> m_sparse_representation{};
-  Hubbard1DHoppingGenerator<S> m_hopping_generator{};
+  RealSpaceHoppingGenerator<S> m_hopping_generator{};
 };
 
 template <size_t S, size_t F>
-Hubbard1D<S, F>::Hubbard1D(double t, double u, double mu)
+RealSpace<S, F>::RealSpace(double t, double u, double mu)
     : m_t(t), m_u(u), m_mu(mu) {
   ED_ASSERT(m_combs.size() == binomial(S, F));
   construct_sparse_representation();
 }
 
 template <size_t S, size_t F>
-size_t Hubbard1D<S, F>::size() const {
+size_t RealSpace<S, F>::size() const {
   return m_combs.size();
 }
 
 template <size_t S, size_t F>
-size_t Hubbard1D<S, F>::dim() const {
+size_t RealSpace<S, F>::dim() const {
   return size() * size();
 }
 
 template <size_t S, size_t F>
-double Hubbard1D<S, F>::t() const {
+double RealSpace<S, F>::t() const {
   return m_t;
 }
 
 template <size_t S, size_t F>
-double Hubbard1D<S, F>::u() const {
+double RealSpace<S, F>::u() const {
   return m_u;
 }
 
 template <size_t S, size_t F>
-double Hubbard1D<S, F>::mu() const {
+double RealSpace<S, F>::mu() const {
   return m_mu;
 }
 
 template <size_t S, size_t F>
-const Combinations<S, F>& Hubbard1D<S, F>::combinations() const {
+const Combinations<S, F>& RealSpace<S, F>::combinations() const {
   return m_combs;
 }
 
 template <size_t S, size_t F>
-const SparseMatrix<double>& Hubbard1D<S, F>::sparse_representation() const {
+const SparseMatrix<double>& RealSpace<S, F>::sparse_representation() const {
   return m_sparse_representation;
 }
 
 template <size_t S, size_t F>
-Eigen::MatrixXd Hubbard1D<S, F>::dense() const {
+Eigen::MatrixXd RealSpace<S, F>::dense() const {
   Eigen::MatrixXd hmat = Eigen::MatrixXd::Zero(dim(), dim());
   for (const auto& [index, val] : m_sparse_representation.elements()) {
     hmat(index.i, index.j) += val;
@@ -149,7 +149,7 @@ Eigen::MatrixXd Hubbard1D<S, F>::dense() const {
 }
 
 template <size_t S, size_t F>
-Eigen::SparseMatrix<double> Hubbard1D<S, F>::sparse() const {
+Eigen::SparseMatrix<double> RealSpace<S, F>::sparse() const {
   Eigen::SparseMatrix<double> hmat(dim(), dim());
   for (const auto& [index, val] : m_sparse_representation.elements()) {
     hmat.coeffRef(index.i, index.j) += val;
@@ -158,7 +158,7 @@ Eigen::SparseMatrix<double> Hubbard1D<S, F>::sparse() const {
 }
 
 template <size_t S, size_t F>
-void Hubbard1D<S, F>::construct_sparse_representation() {
+void RealSpace<S, F>::construct_sparse_representation() {
   // The interaction term is diagonal in this basis, counting the double
   // occupation. Similarly the chemical potential.
   //
