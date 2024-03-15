@@ -19,41 +19,44 @@
 #define EIGEN_USE_LAPACKE
 
 template <size_t S>
-std::vector<Nibble<S>> generate_nibble_transitions(const Nibble<S>& nibble) {
-  std::vector<Nibble<S>> result;
-  size_t n = nibble.size();
-  for (size_t i = 0; i < n; i++) {
-    if (nibble[i] == 1) {
-      if (nibble[(i - 1 + n) % n] == 0) {
-        Nibble<S> left = nibble;
-        left[i] = 0;
-        left[(i - 1 + n) % n] = 1;
-        result.push_back(left);
-      }
-      if (nibble[(i + 1) % n] == 0) {
-        Nibble<S> right = nibble;
-        right[i] = 0;
-        right[(i + 1) % n] = 1;
-        result.push_back(right);
+struct Hubbard1DHoppingGenerator {
+  constexpr std::vector<Nibble<S>> generate_nibble_transitions(
+      const Nibble<S>& nibble) {
+    std::vector<Nibble<S>> result;
+    size_t n = nibble.size();
+    for (size_t i = 0; i < n; i++) {
+      if (nibble[i] == 1) {
+        if (nibble[(i - 1 + n) % n] == 0) {
+          Nibble<S> left = nibble;
+          left[i] = 0;
+          left[(i - 1 + n) % n] = 1;
+          result.push_back(left);
+        }
+        if (nibble[(i + 1) % n] == 0) {
+          Nibble<S> right = nibble;
+          right[i] = 0;
+          right[(i + 1) % n] = 1;
+          result.push_back(right);
+        }
       }
     }
+    return result;
   }
-  return result;
-}
 
-template <size_t S>
-std::vector<State<S>> nearest_neighbors_hoppings(const State<S>& state) {
-  std::vector<State<S>> result;
-  for (const Nibble<S>& nibble_up :
-       generate_nibble_transitions(state.up_nibble())) {
-    result.emplace_back(nibble_up, state.down_nibble());
+  constexpr std::vector<State<S>> nearest_neighbors_hoppings(
+      const State<S>& state) {
+    std::vector<State<S>> result;
+    for (const Nibble<S>& nibble_up :
+         generate_nibble_transitions(state.up_nibble())) {
+      result.emplace_back(nibble_up, state.down_nibble());
+    }
+    for (const Nibble<S>& nibble_down :
+         generate_nibble_transitions(state.down_nibble())) {
+      result.emplace_back(state.up_nibble(), nibble_down);
+    }
+    return result;
   }
-  for (const Nibble<S>& nibble_down :
-       generate_nibble_transitions(state.down_nibble())) {
-    result.emplace_back(state.up_nibble(), nibble_down);
-  }
-  return result;
-}
+};
 
 // Hubbard model in a one-dimensional chain of S sites and F particles.
 // t is nearest-neighbors hopping, u is local interaction and mu is chemical
@@ -91,6 +94,7 @@ class Hubbard1D {
   double m_mu;
   Combinations<S, F> m_combs{};
   SparseMatrix<double> m_sparse_representation{};
+  Hubbard1DHoppingGenerator<S> m_hopping_generator{};
 };
 
 template <size_t S, size_t F>
@@ -166,7 +170,8 @@ void Hubbard1D<S, F>::construct_sparse_representation() {
       size_t i = combinations().b_to_i(up_nibble) * size() +
                  combinations().b_to_i(down_nibble);
       m_sparse_representation(i, i) += m_u * s.double_occ() - m_mu * s.size();
-      for (const State<S>& state : nearest_neighbors_hoppings(s)) {
+      for (const State<S>& state :
+           m_hopping_generator.nearest_neighbors_hoppings(s)) {
         size_t j = combinations().b_to_i(state.up_nibble()) * size() +
                    combinations().b_to_i(state.down_nibble());
         m_sparse_representation(i, j) += -m_t;

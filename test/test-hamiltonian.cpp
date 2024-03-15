@@ -13,22 +13,25 @@ TEST(test_state, nibble_transitions) {
     Nibble<4> upnibble{0, 0, 0, 0};
     Nibble<4> downnibble{0, 0, 0, 0};
     State s(upnibble, downnibble);
-    EXPECT_THAT(nearest_neighbors_hoppings(s), IsEmpty());
+    Hubbard1DHoppingGenerator<4> g;
+    EXPECT_THAT(g.nearest_neighbors_hoppings(s), IsEmpty());
   }
 
   {
     Nibble<4> upnibble{1, 1, 1, 1};
     Nibble<4> downnibble{1, 1, 1, 1};
     State s(upnibble, downnibble);
-    EXPECT_THAT(nearest_neighbors_hoppings(s), IsEmpty());
+    Hubbard1DHoppingGenerator<4> g;
+    EXPECT_THAT(g.nearest_neighbors_hoppings(s), IsEmpty());
   }
 
   {
     Nibble<4> up_nibble{1, 1, 0, 0};
     Nibble<4> down_nibble{1, 0, 1, 0};
     State s(up_nibble, down_nibble);
+    Hubbard1DHoppingGenerator<4> g;
     EXPECT_THAT(
-        nearest_neighbors_hoppings(s),
+        g.nearest_neighbors_hoppings(s),
         UnorderedElementsAre(State(up_nibble, Nibble<4>{0, 0, 1, 1}),
                              State(up_nibble, Nibble<4>{0, 1, 1, 0}),
                              State(up_nibble, Nibble<4>{1, 1, 0, 0}),
