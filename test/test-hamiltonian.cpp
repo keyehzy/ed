@@ -1,6 +1,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
+#include "MomentumSpace.h"
 #include "RealSpace.h"
 
 using testing::DoubleNear;
