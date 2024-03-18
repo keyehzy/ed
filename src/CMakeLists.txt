@@ -8,8 +8,14 @@ find_package(OpenBLAS REQUIRED)
 
 
 add_executable(
-    ed
-    main.cpp
+  ed
+  main.cpp
+)
+
+target_compile_options(
+  ed
+  PUBLIC
+  "${ED_CXX_COMPILER_OPTIONS}"
 )
 
 set_target_properties(ed PROPERTIES RUNTIME_OUTPUT_DIRECTORY ..)
@@ -27,13 +33,6 @@ target_include_directories(
   /usr/include/Spectra
   ${OpenBLAS_INCLUDE_DIR}
   .
-)
-
-target_compile_options(
-  ed-lib
-  PUBLIC
-  -O2
-  -march=native
 )
 
 target_link_libraries(
